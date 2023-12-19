@@ -1,4 +1,4 @@
-CC=gcc
+CC=aarch64-none-linux-gnu-gcc
 CFLAGS=-Wall
 
 OBJ=writer.o
@@ -15,7 +15,5 @@ $(TARGET): $(OBJ)
 
 clean:
 	rm -f $(TARGET) $(OBJ)
-
-.PHONY: all clean
 
 
