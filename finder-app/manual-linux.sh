@@ -12,7 +12,8 @@ BUSYBOX_VERSION=1_33_1
 FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
-TOOLCHN=/home/phobos/Documents/Toolchain/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu
+#TOOLCHN=/home/phobos/Documents/Toolchain/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/
+TOOLCHN=/home/phobos/Documents/Toolchain/new/install/
 BSELOC=/home/phobos/Documents/Coursera/Assignments/Assignment3/finder-app
 if [ $# -lt 1 ]
 then
