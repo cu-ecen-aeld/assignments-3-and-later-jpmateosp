@@ -38,27 +38,28 @@ if [ $assignment != 'assignment1' ]
 then
 	mkdir -p "$WRITEDIR"
 
-	#The WRITEDIR is in quotes because if the directory path consists of spaces, then variable substitution will consider it as multiple argument.
-	#The quotes signify that the entire string in WRITEDIR is a single string.
-	#This issue can also be resolved by using double square brackets i.e [[ ]] instead of using quotes.
 	if [ -d "$WRITEDIR" ]
 	then
-		echo "$WRITEDIR created"
+			echo "$WRITEDIR created"
 	else
-		exit 1
+			exit 1
 	fi
 fi
 echo "Removing the old writer utility and compiling as a native application"
-make CROSS_COMPILE=aarch64-none-linux-gnu- clean
-make CROSS_COMPILE=aarch64-none-linux-gnu- writer
+#make clean
+#make
 
 for i in $( seq 1 $NUMFILES)
 do
 	./writer "$WRITEDIR/${username}$i.txt" "$WRITESTR"
+	echo "$WRITEDIR/${username}$i.txt $WRITESTR"
+
 done
 
+echo $(pwd)
+echo $(ls)
+#OUTPUTSTRING="./finder.sh $WRITEDIR/${username}$i.txt $WRITESTR"
 OUTPUTSTRING=$(./finder.sh "$WRITEDIR" "$WRITESTR")
-
 # remove temporary directories
 rm -rf /tmp/aeld-data
 

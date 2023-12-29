@@ -1,20 +1,35 @@
-#!/bin/bash
+#!/bin/sh
 
-
-if [ "$#" -ne 2 ] 
-then
-	echo Missing parameters!
-	exit 1
+if [ "$#" -ne 2 ]; then
+    echo "Illegal number of parameters"
+    exit 1
 fi
 
-filesdir=$1
-searchstr=$2
+path=$1
+content=$2
 
-if [ -d "$filesdir" ]
-then
-	echo The number of files are $(find "$filesdir" -type f | wc -l) and the number of matching lines are $(grep -r "$searchstr" "$filesdir" | wc -l)
-	exit 0
-else
-	echo Directory not found!
-	exit 1
+if [ -z ${path+x} ]; then 
+echo "0 is unset"
+exit 1
 fi
+
+if [ -z ${content+x} ]; then 
+echo "1 is unset" 
+exit 1
+fi
+
+echo Path: $path Content: $content
+
+if [ -d $path ]
+then
+echo "The directory exists"
+else 
+echo "The directory does not exist"
+exit 1
+fi
+
+number_files=$(find "${path}" -type f | wc -l)
+
+number_lines=$(grep -ro "${content}" "${path}" | wc -l)
+
+echo The number of files are $number_files and the number of matching lines are $number_lines

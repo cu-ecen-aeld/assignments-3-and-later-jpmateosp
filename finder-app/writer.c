@@ -1,37 +1,48 @@
 #include <stdio.h>
-#include <syslog.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <syslog.h> 
+#define _GNU_SOURCE
+#include <string.h>
 
-int main (int argc, char* argv[]){
-	openlog(NULL, 0, LOG_USER);
-	if (argc != 3) {
-	        syslog(LOG_ERR,"Invalid Number of Arguements %d", argc);
-        	return 1;
-    	}
-	
-	char* writefile = argv[1];
-	char* writestr = argv[2];
+struct stat st = {0};
 
-	syslog(LOG_DEBUG, "Writing '%s' to %s", writestr, writefile);
+int main(int argc, char *argv[] )  {
+    openlog("ELCB-Writer", LOG_PID, LOG_USER);
+    if(argc != 3) {
+        syslog (LOG_ERR,"Not enough arguments supplied (argc=%d)\n", argc);
+        printf ("Not enough arguments supplied (argc=%d)\n", argc);
+        syslog (LOG_ERR,"Usage: expecting 2 arguments\n");
+        syslog (LOG_ERR,"- filepath: char array - path to file that will be written\n");
+        syslog (LOG_ERR,"- content: char array - content to be written into file\n");
+        closelog();
+        return 1;
+    }
 
-	FILE *file = fopen(writefile, "w");
+    char* filepath = argv[1];
+    char* content = argv[2];
 
-	if (file == NULL){
-		syslog(LOG_ERR, "Unable to open file");
-		closelog();
-		return 1;
-	}
+    if(strcmp(filepath,"\0") == 0 || strcmp(argv[1],"\0") == 0){
+        syslog(LOG_ERR,"Empty argument supplied");
+        closelog();
+        return 1;
+    }
 
-	int x = fputs(writestr, file);
+    char* folderpath = dirname(strdup(filepath));
 
-	if (x == EOF){
-		syslog(LOG_ERR, "Unable to write the file");
-		closelog();
-		fclose(file);
-		return 1;
-	}
+    if (stat(folderpath, &st) == -1) {
+        mkdir(folderpath, 0700);
+    }
 
-	closelog();
-	fclose(file);
-	return 0;
+    FILE *fp = fopen(filepath, "w");
+    if (fp != NULL)
+    {
+        fputs(content, fp);
+        fclose(fp);
+        syslog(LOG_DEBUG, "Writing %s to %s\n", content, filepath);
+    }
 
+    closelog();
+    return 0;
 }
