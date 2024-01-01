@@ -100,12 +100,6 @@ ${CROSS_COMPILE}readelf -a busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
 
-cd ${BSELOC}
-cp -r lib/ld-linux* ${OUTDIR}/rootfs/lib
-cp -r lib/libm.so.6 ${OUTDIR}/rootfs/lib64
-cp -r lib/libresolv.so.2 ${OUTDIR}/rootfs/lib64
-cp -r lib/libc.so.6 ${OUTDIR}/rootfs/lib64
-
 # TODO: Make device nodes
 cd ${OUTDIR}/rootfs
 sudo mknod -m 666 dev/null c 1 3
@@ -114,6 +108,11 @@ sudo mknod -m 666 dev/console c 5 1
 # TODO: Clean and build the writer utility
 
 cd ${BSELOC}
+cp -r lib/ld-linux* ${OUTDIR}/rootfs/lib
+cp -r lib/libm* ${OUTDIR}/rootfs/lib64
+cp -r lib/libr* ${OUTDIR}/rootfs/lib64
+cp -r lib/libc* ${OUTDIR}/rootfs/lib64
+
 make CROSS_COMPILE=${CROSS_COMPILE} clean
 make CROSS_COMPILE=${CROSS_COMPILE}
 
