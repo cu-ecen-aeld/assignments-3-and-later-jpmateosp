@@ -13,7 +13,7 @@ FINDER_APP_DIR=$(realpath $(dirname $0))
 ARCH=arm64
 CROSS_COMPILE=aarch64-none-linux-gnu-
 #TOOLCHN=/home/phobos/Documents/Toolchain/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/
-TOOLCHN=/home/phobos/Documents/Toolchain/new/install/
+#TOOLCHN=/home/phobos/Documents/Toolchain/new/install/
 BSELOC=/home/phobos/Documents/Coursera/Assignments/Assignment3/finder-app
 if [ $# -lt 1 ]
 then
@@ -100,10 +100,10 @@ ${CROSS_COMPILE}readelf -a busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
 
-find ${TOOLCHN} -name "ld-linux-aarch64.so.1" -exec cp {} ${OUTDIR}/rootfs/lib \;
-find ${TOOLCHN} -name "libm.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
-find ${TOOLCHN} -name "libresolv.so.2" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
-find ${TOOLCHN} -name "libc.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+find ${BSELOC} -name "ld-linux-aarch64.so.1" -exec cp {} ${OUTDIR}/rootfs/lib \;
+find ${BSELOC} -name "libm.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+find ${BSELOC} -name "libresolv.so.2" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+find ${BSELOC} -name "libc.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
 
 # TODO: Make device nodes
 cd ${OUTDIR}/rootfs
