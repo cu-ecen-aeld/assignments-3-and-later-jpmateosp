@@ -66,14 +66,12 @@ fi
 
 # TODO: Create necessary base directories
 
+
 mkdir ${OUTDIR}/rootfs
 cd ${OUTDIR}/rootfs
 mkdir -p bin dev etc home lib lib64 proc sbin sys tmp usr var
 mkdir -p usr/bin usr/lib usr/sbin
 mkdir -p var/log
-
-
-
 
 cd "$OUTDIR"
 if [ ! -d "${OUTDIR}/busybox" ]
@@ -100,25 +98,42 @@ ${CROSS_COMPILE}readelf -a busybox | grep "Shared library"
 
 # TODO: Add library dependencies to rootfs
 
+
+cd "$OUTDIR"
+
+if [ ! -d "${OUTDIR}/Toolchain" ]
+then
+	mkdir Toolchain
+	cd Toolchain
+	wget -O ./gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz "https://developer.arm.com/-/media/Files/downloads/gnu-a/10.3-2021.07/binrel/gcc-arm-10.3-2021.07-x86_64-aarch64-none-linux-gnu.tar.xz?rev=1cb9c51b94f54940bdcccd791451cec3&hash=B380A59EA3DC5FDC0448CA6472BF6B512706F8EC"
+	tar -xf ./gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu.tar.xz
+
+else
+	cd Toolchain
+fi
+
+find ${OUTDIR}/Toolchain -name "ld-linux-aarch64.so.1" -exec cp {} ${OUTDIR}/rootfs/lib \;
+find ${OUTDIR}/Toolchain -name "libm.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+find ${OUTDIR}/Toolchain -name "libresolv.so.2" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+find ${OUTDIR}/Toolchain -name "libc.so.6" -exec cp {} ${OUTDIR}/rootfs/lib64 \;
+
+
 # TODO: Make device nodes
 cd ${OUTDIR}/rootfs
 sudo mknod -m 666 dev/null c 1 3
 sudo mknod -m 666 dev/console c 5 1
 
+
+
 # TODO: Clean and build the writer utility
 
-cd ${BSELOC}
-cp -r lib/ld-linux* ${OUTDIR}/rootfs/lib
-cp -r lib/libm* ${OUTDIR}/rootfs/lib64
-cp -r lib/libr* ${OUTDIR}/rootfs/lib64
-cp -r lib/libc* ${OUTDIR}/rootfs/lib64
+cd "$BSELOC"
 
 make CROSS_COMPILE=${CROSS_COMPILE} clean
 make CROSS_COMPILE=${CROSS_COMPILE}
 
 # TODO: Copy the finder related scripts and executables to the /home directory
 # on the target rootfs
-
 
 cp writer* ${OUTDIR}/rootfs/home
 cp Makefile ${OUTDIR}/rootfs/home
